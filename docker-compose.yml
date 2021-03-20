@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  web:
+    container_name: web
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - redis
+    environment:
+      - FLASK_UPLOAD_FOLDER=/tmp/upload/
+      - GOOGLE_APPLICATION_CREDENTIALS=gcp-key.json
+      - REDIS_HOST=redis
+  redis:
+    image: redis
