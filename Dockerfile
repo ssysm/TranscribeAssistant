@@ -1,6 +1,6 @@
 FROM python:3.8-slim-buster
 
-RUN apt-get update && apt-get --no-install-recommends install -y wget ffmpeg zip
+RUN apt-get update && apt-get --no-install-recommends install -y wget ffmpeg
 COPY ./requirements.txt /app/requirements.txt
 
 WORKDIR /app

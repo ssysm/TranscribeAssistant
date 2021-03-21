@@ -1,21 +1,26 @@
-import flask, os, uuid, subprocess, redis, config, datetime,shutil, sys
-from flask import request, jsonify, logging
+import flask, os, uuid, redis, config, datetime, shutil
+import logging
+from flask import request, jsonify
 import spleeter.utils.logging
 from multiprocessing import Process
 from spleeter.separator import Separator,SpleeterError
 from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
+from flask_cors import CORS
 
 app = flask.Flask(__name__)
+CORS(app)
 cache = redis.Redis(host=os.getenv('REDIS_HOST'), port=6379, db=0, decode_responses=True)
 app.config["DEBUG"] = (os.getenv("FLASK_DEBUG") == "True")
 app.config['UPLOAD_FOLDER'] = os.getenv("FLASK_UPLOAD_FOLDER")
+app.config['CORS_HEADERS'] = 'Content-Type'
 spleeter.utils.logging.configure_logger(True)
 storage_client = storage.Client()
 bucket = storage_client.bucket(config.CONFIG['GCP_BUCKET_NAME'])
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 ALLOWED_EXTENSIONS = {'mp3','wav'}
 STEMS = ['bass.wav', 'drums.wav', 'other.wav', 'piano.wav', 'vocals.wav']
+logging.basicConfig(level=logging.INFO)
 
 def allowed_file(filename):
     return '.' in filename and \
