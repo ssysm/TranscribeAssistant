@@ -3,8 +3,6 @@ services:
   web:
     container_name: web
     build: .
-    ports:
-      - "8080:8080"
     links:
       - redis
     environment:
@@ -13,3 +11,13 @@ services:
       - REDIS_HOST=redis
   redis:
     image: redis
+    container_name: redis
+  nginx:
+    container_name: nginx
+    image: nginx:1.15-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./deploy/nginx:/etc/nginx/conf.d
+    links:
+      - web
